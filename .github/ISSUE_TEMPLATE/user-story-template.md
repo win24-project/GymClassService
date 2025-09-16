@@ -8,9 +8,8 @@ assignees: ''
 ---
 
 # Kriterier
-- [ ] 1
-- [ ] 2
-- [ ] 3
+- Success: 
+- Failure: 
 
 # Tasks
 
