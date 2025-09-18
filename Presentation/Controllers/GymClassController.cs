@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
 
-[Route("api/[controller]")]
+[Route("api")]
 [ApiController]
 public class GymClassController(IGymClassService gymClassService) : ControllerBase
 {
   private readonly IGymClassService _gymClassService = gymClassService;
 
-  [HttpPost]
+  [HttpPost("create")]
   public async Task<IActionResult> Create(CreateGymClassRequest request)
   {
     if (!ModelState.IsValid)
@@ -28,7 +28,7 @@ public class GymClassController(IGymClassService gymClassService) : ControllerBa
     return Ok(result);
   }
 
-  [HttpGet]
+  [HttpGet("get-all")]
   public async Task<IActionResult> GetAll()
   {
     var result = await _gymClassService.GetAllGymClassesAsync();
