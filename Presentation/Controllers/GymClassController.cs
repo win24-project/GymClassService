@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
 
-[Route("api/[controller]")]
+[Route("api")]
 [ApiController]
 public class GymClassController(IGymClassService gymClassService) : ControllerBase
 {
   private readonly IGymClassService _gymClassService = gymClassService;
 
-  [HttpPost]
+  [HttpPost("create")]
   public async Task<IActionResult> Create(CreateGymClassRequest request)
   {
     if (!ModelState.IsValid)
@@ -19,13 +19,25 @@ public class GymClassController(IGymClassService gymClassService) : ControllerBa
     }
 
     var result = await _gymClassService.CreateGymClassAsync(request);
-    return result != null ? Ok(result) : StatusCode(500, result!.Error);
+
+    if (!result.Success)
+    {
+      return BadRequest(new { error = result.Error });
+    }
+
+    return Ok(result);
   }
 
-  [HttpGet]
+  [HttpGet("get-all")]
   public async Task<IActionResult> GetAll()
   {
     var result = await _gymClassService.GetAllGymClassesAsync();
+
+    if (!result.Success)
+    {
+      return BadRequest(new { error = result.Error });
+    }
+
     return Ok(result);
   }
 }

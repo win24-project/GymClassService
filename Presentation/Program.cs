@@ -49,6 +49,11 @@ builder.Services.AddScoped<IGymClassRepository, GymClassRepository>();
 builder.Services.AddScoped<IGymClassService, GymClassService>();
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+  var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+  db.Database.Migrate();
+}
 app.MapOpenApi();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
