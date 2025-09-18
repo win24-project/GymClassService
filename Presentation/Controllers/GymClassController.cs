@@ -19,13 +19,25 @@ public class GymClassController(IGymClassService gymClassService) : ControllerBa
     }
 
     var result = await _gymClassService.CreateGymClassAsync(request);
-    return result != null ? Ok(result) : StatusCode(500, result!.Error);
+
+    if (!result.Success)
+    {
+      return BadRequest(new { error = result.Error });
+    }
+
+    return Ok(result);
   }
 
   [HttpGet]
   public async Task<IActionResult> GetAll()
   {
     var result = await _gymClassService.GetAllGymClassesAsync();
+
+    if (!result.Success)
+    {
+      return BadRequest(new { error = result.Error });
+    }
+
     return Ok(result);
   }
 }
