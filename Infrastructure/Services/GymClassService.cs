@@ -17,7 +17,8 @@ public class GymClassService(IGymClassRepository gymClassRepository) : IGymClass
       {
         Title = request.Title,
         Description = request.Description,
-        Date = request.Date
+        Date = request.Date,
+        Location = request.Location
       };
 
       var gymClassResult = await _gymClassRepository.AddAsync(gymClassEntity);
@@ -42,7 +43,8 @@ public class GymClassService(IGymClassRepository gymClassRepository) : IGymClass
       Id = entity.Id,
       Title = entity.Title,
       Description = entity.Description,
-      Date = entity.Date
+      Date = entity.Date,
+      Location = entity.Location
     });
 
     return new GymClassResult<IEnumerable<GymClass>> { Success = true, Result = gymClasses };
