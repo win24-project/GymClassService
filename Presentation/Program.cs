@@ -1,33 +1,27 @@
-using System.Security.Cryptography;
 using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using Data.Contexts;
 using Data.Interfaces;
 using Data.Repositories;
 using Infrastructure.Services;
 using Infrastructure.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
-var keyVaultUrl = "https://group-project-keyvault.vault.azure.net/";
-builder.Configuration.AddAzureKeyVault(new Uri(keyVaultUrl), new DefaultAzureCredential());
+builder.Configuration.AddAzureKeyVault(new Uri("https://group-project-keyvault.vault.azure.net/"), new DefaultAzureCredential());
 
-var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
-KeyVaultSecret dbSecret = await client.GetSecretAsync("DbConnectionString-GroupProject");
-/* KeyVaultSecret jwtKeySecret = await client.GetSecretAsync("JwtPublicKey");
-KeyVaultSecret issuerSecret = await client.GetSecretAsync("JwtIssuer");
-KeyVaultSecret audienceSecret = await client.GetSecretAsync("JwtAudience"); */
+var dbConnectionString = builder.Configuration["DbConnectionString-GroupProject"];
+/* var jwtPublicKey = builder.Configuration["JwtPublicKey"];
+var jwtIssuer = builder.Configuration["JwtPublicKey"];
+var jwtAudience = builder.Configuration["JwtPublicKey"]; */
 
-builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(dbSecret.Value));
+builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(dbConnectionString));
 
 /* var rsa = RSA.Create();
-rsa.ImportFromPem(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(jwtKeySecret.Value)));
+rsa.ImportFromPem(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(jwtPublicKey!)));
 
 var signingKey = new RsaSecurityKey(rsa);
 
@@ -39,8 +33,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     ValidateAudience = true,
     ValidateLifetime = true,
     ValidateIssuerSigningKey = true,
-    ValidIssuer = issuerSecret.Value,
-    ValidAudience = audienceSecret.Value,
+    ValidIssuer = jwtIssuer,
+    ValidAudience = jwtAudience,
     IssuerSigningKey = signingKey
   };
 }); */
