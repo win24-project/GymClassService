@@ -15,6 +15,7 @@ public class GymClassService(IGymClassRepository gymClassRepository) : IGymClass
     {
       var gymClassEntity = new GymClassEntity
       {
+        Image = request.Image,
         Title = request.Title,
         Description = request.Description,
         Date = request.Date,
@@ -41,6 +42,7 @@ public class GymClassService(IGymClassRepository gymClassRepository) : IGymClass
     var gymClasses = result.Result?.Select(entity => new GymClass
     {
       Id = entity.Id,
+      Image = entity.Image,
       Title = entity.Title,
       Description = entity.Description,
       Date = entity.Date,
