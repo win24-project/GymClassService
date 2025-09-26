@@ -5,6 +5,9 @@ using Data.Repositories;
 using Infrastructure.Services;
 using Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -14,13 +17,13 @@ builder.Services.AddSwaggerGen();
 builder.Configuration.AddAzureKeyVault(new Uri("https://group-project-keyvault.vault.azure.net/"), new DefaultAzureCredential());
 
 var dbConnectionString = builder.Configuration["DbConnectionString-GroupProject"];
-/* var jwtPublicKey = builder.Configuration["JwtPublicKey"];
+var jwtPublicKey = builder.Configuration["JwtPublicKey"];
 var jwtIssuer = builder.Configuration["JwtPublicKey"];
-var jwtAudience = builder.Configuration["JwtPublicKey"]; */
+var jwtAudience = builder.Configuration["JwtPublicKey"];
 
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(dbConnectionString));
 
-/* var rsa = RSA.Create();
+var rsa = RSA.Create();
 rsa.ImportFromPem(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(jwtPublicKey!)));
 
 var signingKey = new RsaSecurityKey(rsa);
@@ -37,7 +40,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     ValidAudience = jwtAudience,
     IssuerSigningKey = signingKey
   };
-}); */
+});
 
 builder.Services.AddScoped<IGymClassRepository, GymClassRepository>();
 builder.Services.AddScoped<IGymClassService, GymClassService>();
