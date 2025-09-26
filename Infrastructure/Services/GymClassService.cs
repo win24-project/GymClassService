@@ -19,7 +19,9 @@ public class GymClassService(IGymClassRepository gymClassRepository) : IGymClass
         Title = request.Title,
         Description = request.Description,
         Date = request.Date,
-        Location = request.Location
+        Location = request.Location,
+        Instructor = request.Instructor,
+        MaxNumOfParticipants = request.MaxNumOfParticipants
       };
 
       var gymClassResult = await _gymClassRepository.AddAsync(gymClassEntity);
@@ -46,7 +48,9 @@ public class GymClassService(IGymClassRepository gymClassRepository) : IGymClass
       Title = entity.Title,
       Description = entity.Description,
       Date = entity.Date,
-      Location = entity.Location
+      Location = entity.Location,
+      Instructor = entity.Instructor,
+      MaxNumOfParticipants = entity.MaxNumOfParticipants
     });
 
     return new GymClassResult<IEnumerable<GymClass>> { Success = true, Result = gymClasses };
