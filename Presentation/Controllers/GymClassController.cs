@@ -31,6 +31,24 @@ public class GymClassController(IGymClassService gymClassService) : ControllerBa
   }
 
   [Authorize(Roles = "Admin")]
+  [HttpPost("edit")]
+  public async Task<IActionResult> Edit(EditGymClassRequest request)
+  {
+    if (!ModelState.IsValid)
+    {
+      return BadRequest(ModelState);
+    }
+
+    var result = await _gymClassService.EditGymClassAsync(request);
+    if (!result.Success)
+    {
+      return BadRequest(new { error = result.Error });
+    }
+
+    return Ok(result);
+  }
+
+  [Authorize(Roles = "Admin")]
   [HttpPost("delete/{id}")]
   public async Task<IActionResult> Delete(string id)
   {
@@ -42,7 +60,7 @@ public class GymClassController(IGymClassService gymClassService) : ControllerBa
     var result = await _gymClassService.RemoveGymClassAsync(id);
     if (!result.Success)
     {
-      return BadRequest();
+      return BadRequest(new { error = result.Error });
     }
 
     return Ok(result);
