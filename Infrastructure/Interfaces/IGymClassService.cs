@@ -6,4 +6,5 @@ public interface IGymClassService
 {
   Task<GymClassResult> CreateGymClassAsync(CreateGymClassRequest request);
   Task<GymClassResult<IEnumerable<GymClass>>> GetAllGymClassesAsync();
+  Task<GymClassResult> RemoveGymClassAsync(string id);
 }
