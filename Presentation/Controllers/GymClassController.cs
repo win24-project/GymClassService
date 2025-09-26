@@ -30,6 +30,24 @@ public class GymClassController(IGymClassService gymClassService) : ControllerBa
     return Ok(result);
   }
 
+  [Authorize(Roles = "Admin")]
+  [HttpPost("delete/{id}")]
+  public async Task<IActionResult> Delete(string id)
+  {
+    if (string.IsNullOrEmpty(id))
+    {
+      return BadRequest();
+    }
+
+    var result = await _gymClassService.RemoveGymClassAsync(id);
+    if (!result.Success)
+    {
+      return BadRequest();
+    }
+
+    return Ok(result);
+  }
+
   [HttpGet("get-all")]
   public async Task<IActionResult> GetAll()
   {

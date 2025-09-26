@@ -38,6 +38,36 @@ public class GymClassService(IGymClassRepository gymClassRepository) : IGymClass
     }
   }
 
+  public async Task<GymClassResult> RemoveGymClassAsync(string id)
+  {
+    if (string.IsNullOrEmpty(id))
+    {
+      return new GymClassResult { Success = false, Error = "Gym Class ID cannot be null or empty." };
+    }
+
+    try
+    {
+      var gymClass = await _gymClassRepository.GetAsync(x => x.Id == id);
+
+      if (!gymClass.Success)
+      {
+        return new GymClassResult { Success = false, Error = "Could not find any Gym Class with this ID." };
+      }
+
+      var result = await _gymClassRepository.DeleteAsync(gymClass.Result!);
+      if (!result.Success)
+      {
+        return new GymClassResult { Success = false, Error = result.Error };
+      }
+
+      return new GymClassResult { Success = true };
+    }
+    catch (Exception ex)
+    {
+      return new GymClassResult { Success = false, Error = ex.Message };
+    }
+  }
+
   public async Task<GymClassResult<IEnumerable<GymClass>>> GetAllGymClassesAsync()
   {
     var result = await _gymClassRepository.GetAllAsync();
