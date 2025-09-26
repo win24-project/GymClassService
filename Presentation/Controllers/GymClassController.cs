@@ -1,5 +1,6 @@
 using Infrastructure.Interfaces;
 using Infrastructure.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
@@ -10,6 +11,7 @@ public class GymClassController(IGymClassService gymClassService) : ControllerBa
 {
   private readonly IGymClassService _gymClassService = gymClassService;
 
+  [Authorize(Roles = "Admin")]
   [HttpPost("create")]
   public async Task<IActionResult> Create(CreateGymClassRequest request)
   {
