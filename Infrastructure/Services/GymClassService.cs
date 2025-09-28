@@ -38,6 +38,40 @@ public class GymClassService(IGymClassRepository gymClassRepository) : IGymClass
     }
   }
 
+  public async Task<GymClassResult> EditGymClassAsync(EditGymClassRequest request)
+  {
+    var existingGymClassEntity = await _gymClassRepository.GetAsync(x => x.Id == request.Id);
+    if (!existingGymClassEntity.Success)
+    {
+      return new GymClassResult { Success = false, Error = "Could not find any Gym Class with this ID." };
+    }
+
+    try
+    {
+      var gymClassEntity = existingGymClassEntity.Result;
+
+      gymClassEntity!.Image = request.Image;
+      gymClassEntity.Title = request.Title;
+      gymClassEntity.Description = request.Description;
+      gymClassEntity.Date = request.Date;
+      gymClassEntity.Location = request.Location;
+      gymClassEntity.Instructor = request.Instructor;
+      gymClassEntity.MaxNumOfParticipants = request.MaxNumOfParticipants;
+
+      var result = await _gymClassRepository.UpdateAsync(gymClassEntity);
+      if (!result.Success)
+      {
+        return new GymClassResult { Success = false, Error = result.Error };
+      }
+
+      return new GymClassResult { Success = true };
+    }
+    catch (Exception ex)
+    {
+      return new GymClassResult { Success = false, Error = ex.Message };
+    }
+  }
+
   public async Task<GymClassResult> RemoveGymClassAsync(string id)
   {
     if (string.IsNullOrEmpty(id))
