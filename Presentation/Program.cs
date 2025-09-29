@@ -18,8 +18,8 @@ builder.Configuration.AddAzureKeyVault(new Uri("https://group-project-keyvault.v
 
 var dbConnectionString = builder.Configuration["DbConnectionString-GroupProject"];
 var jwtPublicKey = builder.Configuration["JwtPublicKey"];
-var jwtIssuer = builder.Configuration["JwtPublicKey"];
-var jwtAudience = builder.Configuration["JwtPublicKey"];
+var jwtIssuer = builder.Configuration["JwtIssuer"];
+var jwtAudience = builder.Configuration["JwtAudience"];
 
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(dbConnectionString));
 
