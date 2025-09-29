@@ -6,8 +6,9 @@ using Infrastructure.Services;
 using Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -23,23 +24,20 @@ var jwtAudience = builder.Configuration["JwtAudience"];
 
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(dbConnectionString));
 
-var rsa = RSA.Create();
-rsa.ImportFromPem(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(jwtPublicKey!)));
-
-var signingKey = new RsaSecurityKey(rsa);
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
+  options.RequireHttpsMetadata = true;
   options.TokenValidationParameters = new TokenValidationParameters
   {
     ValidateIssuer = true,
+    ValidIssuer = builder.Configuration["JwtIssuer"],
     ValidateAudience = true,
-    ValidateLifetime = true,
+    ValidAudience = builder.Configuration["JwtAudience"],
     ValidateIssuerSigningKey = true,
-    ValidIssuer = jwtIssuer,
-    ValidAudience = jwtAudience,
-    IssuerSigningKey = signingKey
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtPublicKey"]!)),
+    RoleClaimType = ClaimTypes.Role
   };
+  options.MapInboundClaims = true;
 });
 
 builder.Services.AddScoped<IGymClassRepository, GymClassRepository>();
