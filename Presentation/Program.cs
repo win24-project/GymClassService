@@ -18,10 +18,6 @@ builder.Services.AddSwaggerGen();
 builder.Configuration.AddAzureKeyVault(new Uri("https://group-project-keyvault.vault.azure.net/"), new DefaultAzureCredential());
 
 var dbConnectionString = builder.Configuration["DbConnectionString-GroupProject"];
-var jwtPublicKey = builder.Configuration["JwtPublicKey"];
-var jwtIssuer = builder.Configuration["JwtIssuer"];
-var jwtAudience = builder.Configuration["JwtAudience"];
-
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(dbConnectionString));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -34,7 +30,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     ValidateAudience = true,
     ValidAudience = builder.Configuration["JwtAudience"],
     ValidateIssuerSigningKey = true,
-    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtPublicKey"]!)),
+    IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(builder.Configuration["JwtSecret"]!)),
     RoleClaimType = ClaimTypes.Role
   };
   options.MapInboundClaims = true;
