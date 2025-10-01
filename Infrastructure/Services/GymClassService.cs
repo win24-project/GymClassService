@@ -119,4 +119,29 @@ public class GymClassService(IGymClassRepository gymClassRepository) : IGymClass
 
     return new GymClassResult<IEnumerable<GymClass>> { Success = true, Result = gymClasses };
   }
+
+  public async Task<GymClassResult<GymClass>> GetGymClassAsync(string id)
+  {
+    var result = await _gymClassRepository.GetAsync(x => x.Id == id);
+
+    if (!result.Success)
+    {
+      return new GymClassResult<GymClass> { Success = false, Error = "Could not find any Gym Class with this ID." };
+    }
+
+    var entity = result.Result;
+    var gymClass = new GymClass
+    {
+      Id = entity!.Id,
+      Image = entity.Image,
+      Title = entity.Title,
+      Description = entity.Description,
+      Date = entity.Date,
+      Location = entity.Location,
+      Instructor = entity.Instructor,
+      MaxNumOfParticipants = entity.MaxNumOfParticipants
+    };
+
+    return new GymClassResult<GymClass> { Success = true, Result = gymClass };
+  }
 }

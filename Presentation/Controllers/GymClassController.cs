@@ -78,4 +78,17 @@ public class GymClassController(IGymClassService gymClassService) : ControllerBa
 
     return Ok(result);
   }
+
+  [HttpGet("get/{id}")]
+  public async Task<IActionResult> Get(string id)
+  {
+    var result = await _gymClassService.GetGymClassAsync(id);
+
+    if (!result.Success)
+    {
+      return BadRequest(new { error = result.Error });
+    }
+
+    return Ok(result);
+  }
 }
